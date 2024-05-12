@@ -1,7 +1,5 @@
 import React from "react";
 
-// display how many tasks are listed, from 0 to infinity
-
 const TodoFooter = ({todos}) => {
 	return (
 		<>

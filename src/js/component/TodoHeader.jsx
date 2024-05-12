@@ -3,27 +3,41 @@ import React, { useState } from "react";
 //style
 import '../../styles/TodoHeader.css'
 
-
 const TodoHeader = ({todos, setTodos}) => {
-	const [newTask, setNewTask] = useState("")
-    const [idCounter, setIdCounter] = useState(0);
+	const [newTask, setNewTask] = useState("");
+    const postNewTask = async (todoObject) => {
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(todoObject),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        const response = await fetch('https://playground.4geeks.com/todo/todos/yvenerd', options)
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            console.log('Error: ', response.status, response.statusText);
+            return {
+                error: {
+                    status: response.status, 
+                    statusText: response.statusText
+                }
+            }
+        }
+    }
     
     const addTask = () => {
-        //console.log("Creating new task: ", newTask);
-
         let newTodoObject = {
-            id: idCounter,
-            title: newTask,
+            label: newTask,
+            is_done: false
         };
-
-        //console.log("new object:", newTodoObject);
-
-        // the ...todos, the dots are what we call the spread operator.
-        // The spread operator expands the array into its elements
-        // and then newTodoObject is added at the end of the array.
-        // It is a way to push into an array.
-        setTodos([...todos, newTodoObject]);
-        setIdCounter(idCounter + 1);
+        
+        const newTodos = [...todos, newTodoObject];
+        setTodos(newTodos);
+        postNewTask(newTodoObject);
     }
 
     const checkTextBox = () => {
